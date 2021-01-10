@@ -73,4 +73,9 @@ public class Simulator {
 	public String toString() {
 		return String.format("Halted: %b%nProgram counter: %d%n%s%n", halted, programCounter, stack);
 	}
+
+	public Simulator createCopy(){
+		Simulator copy = this;
+		return copy;
+	}
 }
