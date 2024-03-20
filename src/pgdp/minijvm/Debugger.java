@@ -69,22 +69,22 @@ public class Debugger {
     public Debugger(int stackSize, Instruction[] code) {
         this.stackSize = stackSize;
         this.code = code;
-        this.simulation = new Simulator(stackSize,code);
-        this.breakpoint = new int[code.length+1];
+        this.simulation = new Simulator(stackSize, code);
+        this.breakpoint = new int[code.length + 1];
 
     }
 
     //Methods to implement each debbuger instruction
     public String setBreakpoint(int index) {
-        lastInstruction = "SET-BREAKPOINT "+index;
+        lastInstruction = "SET-BREAKPOINT " + index;
         if (index < 0 || index > code.length) {
-            return "Invalid breakpoint index!"+"\n";
+            return "Invalid breakpoint index!" + "\n";
         } else if (breakpoint[index] == 1) {
-            return "Breakpoint already set!"+"\n";
-        }else{
-            lastLastLastInstruction = lastLastInstruction;//This is for the undo method,comes later
+            return "Breakpoint already set!" + "\n";
+        } else {
+            lastLastLastInstruction = lastLastInstruction; //This is for the undo method,comes later
             lastLastInstruction = lastInstruction;
-            lastInstruction = "SET-BREAKPOINT "+index;
+            lastInstruction = "SET-BREAKPOINT " + index;
             breakpoint[index] = 1;
             return null;
         }
@@ -93,13 +93,13 @@ public class Debugger {
 
     public String removeBreakpoint(int index) {
         if (index < 0 || index > code.length) {
-            return "Invalid breakpoint index!"+"\n";
+            return "Invalid breakpoint index!" + "\n";
         } else if (breakpoint[index] != 1) {
-            return "No breakpoint to remove!"+"\n";
-        }else{
+            return "No breakpoint to remove!" + "\n";
+        } else {
             lastLastLastInstruction = lastLastInstruction;
             lastLastInstruction = lastInstruction;
-            lastInstruction = "REMOVE-BREAKPOINT "+index;
+            lastInstruction = "REMOVE-BREAKPOINT " + index;
             breakpoint[index] = 0;
             return null;
         }
@@ -107,7 +107,7 @@ public class Debugger {
 
     public String run() {
         if (simulation.isHalted()) {
-            return "No more instructions to execute!"+"\n";
+            return "No more instructions to execute!" + "\n";
         }
         lastLastLastInstruction = lastLastInstruction;
         lastLastInstruction = lastInstruction;
@@ -124,14 +124,14 @@ public class Debugger {
 
     public String next(int k) {
         if (k < 0) {
-            return "Instruction count must be positive!"+"\n";
+            return "Instruction count must be positive!" + "\n";
         }
         if (simulation.isHalted()) {
-            return "No more instructions to execute!"+"\n";
+            return "No more instructions to execute!" + "\n";
         }
         lastLastLastInstruction = lastLastInstruction;
         lastLastInstruction = lastInstruction;
-        lastInstruction = "NEXT "+k;
+        lastInstruction = "NEXT " + k;
         for (int i = 0; i < k; i++) {
             if (breakpoint != null && breakpoint[i] != 0) {
                 break;
@@ -145,7 +145,7 @@ public class Debugger {
     public String step() {
         int i = simulation.getProgramCounter();
         if (simulation.isHalted() && i == code.length) {
-            return "No more instructions to execute!"+"\n";
+            return "No more instructions to execute!" + "\n";
         } else {
             lastLastLastInstruction = lastLastInstruction;
             lastLastInstruction = lastInstruction;
@@ -159,14 +159,14 @@ public class Debugger {
         lastLastLastInstruction = lastLastInstruction;
         lastLastInstruction = lastInstruction;
         lastInstruction = "RESET";
-        Simulator result = new Simulator(stackSize,code);
+        Simulator result = new Simulator(stackSize, code);
         simulation = result;
         return null;
     }
 
     public String back(){
         if (simulation.getProgramCounter() == 0){
-            return "Cannot go back an instruction, none left!"+"\n";
+            return "Cannot go back an instruction, none left!" + "\n";
         }else{
             lastLastLastInstruction = lastLastInstruction;
             lastLastInstruction = lastInstruction;
@@ -176,7 +176,8 @@ public class Debugger {
                 result.executeNextInstruction();
             }
             simulation = result;
-        return null;}
+        return null;
+        }
     }
 
     //I wasn't able to make the InstructionStack work for this method
@@ -184,7 +185,7 @@ public class Debugger {
     //before to undo them.
     public String undo(){
         if (lastInstruction == null){
-            return "No debugger command to undo!"+"\n";
+            return "No debugger command to undo!" + "\n";
         }else{
             if(lastInstruction.contains("SET-BREAKPOINT")){
                 int k = Character.getNumericValue(lastInstruction.charAt(15));
@@ -199,7 +200,7 @@ public class Debugger {
                 for (int i = 0; i < k; i++) {
                     back();
                 }
-                lastLastInstruction = "NEXT "+k;
+                lastLastInstruction = "NEXT " + k;
 
             }else if (lastInstruction.contains("STEP")){
                 back();
